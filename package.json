@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "babel-plugin-transform-flow-strip-types":"^6.21.0",
+    "esrever":"^0.2.0",
+    "flow-bin":"^0.32.0",
+    "invariant":"^2.2.2",
+    "warning":"^3.0.0",
+    "wechat4u":"^0.6.10"
+  }
+}
