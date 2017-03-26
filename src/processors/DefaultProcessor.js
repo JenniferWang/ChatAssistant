@@ -2,12 +2,18 @@
  * @flow
  */
 
-'use strict'
+'use strict';
 
-import type {Bot, Message, MessageProccesorContext} from '../Types';
+const { DEFAULT_PROCESSOR } = require('../Config');
+
+import type {
+  Bot,
+  Message,
+  MessageProccesorContext
+} from '../Types';
 
 function process(context: MessageProccesorContext): Promise<MessageProccesorContext> {
-  const {bot, content, hasResponded, message} = context;
+  const { bot, content, from, hasResponded, message } = context;
   if (hasResponded) {
     return Promise.resolve(context);
   }
@@ -17,9 +23,9 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
 
   let response;
   if (isMentioned) {
-    response = '~~~ 在下松井屋胸毛, 有何贵干喵🐱 ~~~';
+    response = DEFAULT_PROCESSOR.getIsMentionedResponse();
   } else if (isCallingMe) {
-    response = `~~~ 有人在呼唤我喵🐱 ~~~`
+    response = DEFAULT_PROCESSOR.getIsCalledResponse(from);
   } else {
     return Promise.resolve(context);
   }
@@ -33,4 +39,4 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
     .catch(() => context);
 }
 
-module.exports = {process};
+module.exports = { process };

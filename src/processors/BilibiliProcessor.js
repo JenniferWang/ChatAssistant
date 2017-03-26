@@ -5,12 +5,12 @@
 'use strict'
 
 const request = require('request');
-const {TULING} = require('../Config');
+const { TULING } = require('../Config');
 
-import type {Bot, Message, MessageProccesorContext} from '../Types';
+import type {Bot, Message, MessageProccesorContext } from '../Types';
 
 function process(context: MessageProccesorContext): Promise<MessageProccesorContext> {
-  const {bot, content, hasResponded, message} = context;
+  const { bot, content, hasResponded, message } = context;
   const successContext = {
     ...context,
     hasResponded: true,
@@ -19,6 +19,7 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
   if (matches && matches.length > 1) {
     const av = matches[1];
     // const index = matches.length > 3 ? matches[3] : null;
+    // TODO: move constants to config
     return bot.sendMsg(`~~~~ 喵🐱, 快来舔 ${av} ~~~~`, message.FromUserName)
       .then(() => successContext)
       .catch(() => context);
@@ -26,4 +27,4 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
   return Promise.resolve(context);
 }
 
-module.exports = {process};
+module.exports = { process };

@@ -5,14 +5,17 @@
 'use strict'
 
 const request = require('request');
-const {TULING} = require('../Config');
+const { HASHTAG_PROCESSOR } = require('../Config');
 
-import type {Bot, Message, MessageProccesorContext} from '../Types'
+import type {Bot, Message, MessageProccesorContext } from '../Types'
 
-function process(context: MessageProccesorContext): Promise<MessageProccesorContext>{
-  const {bot, content, message, hasResponded, previousMessages} = context;
-  const tags = content.match(/([^# ]+)/g);
-  if (hasResponded || !tags || tags.length === 0) {
+function process(context: MessageProccesorContext): Promise<MessageProccesorContext> {
+  const { bot, content, message, previousMessages } = context;
+
+  // TODO: Now we only 'store' the tags. Need to find a way to initiate 'search';
+  const matches = content.match(/\#[^\# ]+/g);
+  const tags = matches && matches.map(raw => raw.substring(1)).filter(t => t !== '');
+  if (!tags || tags.length === 0) {
     return Promise.resolve(context);
   }
   const successContext = {
@@ -23,7 +26,7 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
   if (tags.length === 1) {
     const tag = tags[0];
     note = content.split(tag).filter(s => s !== '').join('\n');
-    response = `~~~ 胸毛君记下了喵🐱 ~~\ntag: ${tag}\n, note: ${note}\n`;
+    response = HASHTAG_PROCESSOR.getTagRecordedResposne(tag, note || 'NONE');
   }
   // fetch the previous message sent by the same user
   const previous = previousMessages && previousMessages.find(msg =>
@@ -31,10 +34,11 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
   );
   if (previous) {
     note = previous.Content;
-    response = `~~~ 胸毛君记下了喵🐱 ~~\ntags: ${JSON.stringify(tags)}\n, note: ${note}`;
+    response = HASHTAG_PROCESSOR.getTagRecordedResposne(JSON.stringify(tags), note);
   } else {
-    response = '~~~ 胸毛君没有发现上文喵🐱 ~~~';
+    response = HASHTAG_PROCESSOR.getMissingPreviousMessageResponse();
   }
+
   // asynchronously store to db
 
   return bot.sendMsg(response, message.FromUserName)
@@ -42,4 +46,4 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
     .catch(() => context);
 }
 
-module.exports = {process};
+module.exports = { process };

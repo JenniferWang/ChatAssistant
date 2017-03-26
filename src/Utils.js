@@ -1,12 +1,17 @@
 /*
  * @flow
  */
+
 'use strict';
 
-import type {Bot, Message, MessageProccesorContext} from './Types';
+import type { Bot, Message, MessageProccesorContext } from './Types';
 const invariant = require('invariant');
 
-function buildMessageContext(bot: Bot, message: Message, previousMessages: ?Array<Message>): ?MessageProccesorContext {
+function buildMessageContext(
+  bot: Bot,
+  message: Message,
+  previousMessages: ?Array<Message>
+): ?MessageProccesorContext {
   invariant(
     message.MsgType === bot.CONF.MSGTYPE_TEXT,
     'buildMessageContext: expected message type to be %s but get %s.',
@@ -16,7 +21,7 @@ function buildMessageContext(bot: Bot, message: Message, previousMessages: ?Arra
   const matches = message.Content.match('^(.*):\\n(.*)');
   if (!matches || matches.length < 3) {
     console.log('....bad message format...' + message.Content);
-    return null;
+  return null;
   }
   return {
     from: matches[1],
@@ -28,4 +33,4 @@ function buildMessageContext(bot: Bot, message: Message, previousMessages: ?Arra
   };
 }
 
-module.exports = {buildMessageContext};
+module.exports = { buildMessageContext };

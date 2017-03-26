@@ -63,7 +63,7 @@ export type Bot = {
   CONF: BotConfig,
   state: BotState, // bot.CONF.STATE
   user: User,       // current login user
-  contacts: {[username: string]: Contact},
+  contacts: { [username: string]: Contact },
 };
 
 export type BotState = {

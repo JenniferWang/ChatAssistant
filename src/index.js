@@ -7,7 +7,6 @@
 require('babel-register');
 
 
-const Wechat = require('wechat4u');
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const request = require('request');
@@ -18,27 +17,23 @@ const {
   WECHAT,
 } = require('./Config');
 const Buffer = require('./Buffer');
-const {buildMessageContext} = require('./Utils');
+const ChatBot = require('./ChatBot');
+const { buildMessageContext } = require('./Utils');
 
-import type {
-  Message,
-  MessageProccesor,
-  Contact,
-  Bot,
-} from './Types';
+import type { Message, MessageProccesor, Contact, Bot } from './Types';
 
 const FILE_HELPER = 'filehelper';
 
 // Note: order matters.
-const processors: Array<MessageProccesor> = [
+const _processors: Array<MessageProccesor> = [
   require('./processors/BiliBiliProcessor'),
   require('./processors/HashtagProcessor'),
   require('./processors/TulingProcessor'),
   require('./processors/DefaultProcessor'),
 ];
 
-const buffer = new Buffer(BUFFER_SIZE);
-const bot: Bot = new Wechat();
+const _buffer = new Buffer(BUFFER_SIZE);
+const bot: Bot = new ChatBot();
 bot.start()
 
 const onError = (error) => {
@@ -71,23 +66,24 @@ bot.on('message', msg => {
   if (msg.isSendBySelf) {
     return;
   }
+
   let ToUserName = FILE_HELPER;
   switch (msg.MsgType) {
     case bot.CONF.MSGTYPE_TEXT:
-      const initialContext = buildMessageContext(bot, msg);
+      const initialContext = buildMessageContext(bot, msg, null /* _buffer */);
       if (initialContext) {
-        processors.reduce((prevPromise, processor) => {
+        _processors.reduce((prevPromise, processor) => {
           return prevPromise.then(processor.process);
         }, Promise.resolve(initialContext));
       }
       break
     case bot.CONF.MSGTYPE_APP:
-      buffer.push(msg);
+
       bot.forwardMsg(msg, ToUserName)
         .catch(onError);
       break
     default:
-      buffer.push(msg);
       break
   }
+  _buffer.push(msg);
 });

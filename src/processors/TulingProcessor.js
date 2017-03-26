@@ -5,18 +5,18 @@
 'use strict'
 
 const request = require('request');
-const {TULING} = require('../Config');
+const { TULING } = require('../Config');
 
-import type {Bot, Message, MessageProccesorContext} from '../Types';
+import type {Bot, Message, MessageProccesorContext } from '../Types';
 
-function getTulingResponse(content: string, user: ?string): Promise<?string> {
+function getTulingResponse(content: string, user: ?string): Promise<?string > {
   return new Promise((resolve, reject) => {
     const body = {
       userid: user || 'none',
       info: content,
       key: TULING.apiKey,
     };
-    request.post(TULING.url, {form: body}, (error, response, body) => {
+    request.post(TULING.url, { form: body }, (error, response, body) => {
       if (error) {
         reject(error);
       }
@@ -27,7 +27,7 @@ function getTulingResponse(content: string, user: ?string): Promise<?string> {
 }
 
 function process(context: MessageProccesorContext): Promise<MessageProccesorContext> {
-  const {bot, content, hasResponded, message} = context;
+  const { bot, content, hasResponded, message } = context;
   const myName = bot.user.NickName;
   const isMentioned = !!content.match(`@${myName}`);
   if (!isMentioned || hasResponded) {
@@ -50,4 +50,4 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
     .catch(() => context);
 }
 
-module.exports = {process};
+module.exports = { process };
