@@ -6,10 +6,16 @@
     "esrever": "^0.2.0",
     "flow-bin": "^0.32.0",
     "invariant": "^2.2.2",
-    "mongoose": "^4.9.1",
+    "mongodb": "^2.2.25",
+    "promise.prototype.finally": "^2.0.1",
     "qrcode-terminal": "^0.11.0",
     "request": "^2.81.0",
     "warning": "^3.0.0",
-    "wechat4u": "^0.6.10"
+    "wechat4u": "^0.6.11"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0"
   }
 }
