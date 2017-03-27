@@ -6,11 +6,7 @@
 
 const { DEFAULT_PROCESSOR } = require('../Config');
 
-import type {
-  Bot,
-  Message,
-  MessageProccesorContext
-} from '../Types';
+import type { MessageProccesorContext } from '../Types';
 
 function process(context: MessageProccesorContext): Promise<MessageProccesorContext> {
   const { bot, content, from, hasResponded, message } = context;

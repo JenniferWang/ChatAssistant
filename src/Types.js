@@ -9,7 +9,7 @@ export type User = {
   NickName: string,
 };
 
-export type Message = {
+export type RawMessage = {
   MsgType: MessageType,
   isSendBySelf: boolean,
   FromUserName: string,
@@ -31,9 +31,9 @@ export type MessageProccesorContext = {
   // message stripped of the 'prefix'
   content: string,
   // current 'Message' object.
-  message: Message,
+  message: RawMessage,
   // previous messages provide context. [newest msg, ..., oldest msg]
-  previousMessages: ?Array<Message>,
+  previousMessages: ?Array<RawMessage>,
 };
 
 export type MessageProccesor = {
@@ -57,7 +57,7 @@ export type Bot = {
   stop: () => void,
   emit: (event: Event, data: any) => void,
   on: (event: Event, callback: CallBack) => void,
-  forwardMsg: (message: Message, to: string) => Promise<void>,
+  forwardMsg: (message: RawMessage, to: string) => Promise<void>,
   sendMsg: (text: string, to: string) => Promise<void>,
 
   CONF: BotConfig,

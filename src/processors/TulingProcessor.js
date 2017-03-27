@@ -5,9 +5,9 @@
 'use strict'
 
 const request = require('request');
-const { TULING } = require('../Config');
+const { TULING, TULING_PROCESSOR } = require('../Config');
 
-import type {Bot, Message, MessageProccesorContext } from '../Types';
+import type { MessageProccesorContext } from '../Types';
 
 function getTulingResponse(content: string, user: ?string): Promise<?string > {
   return new Promise((resolve, reject) => {
@@ -39,7 +39,7 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
   };
   const onResponse = (response) => {
     if (!response) {
-      return bot.sendMsg('~~~ 胸毛君听不懂🐱 ~~~~', message.FromUserName);
+      return bot.sendMsg(TULING_PROCESSOR.getNoContentResponse(), message.FromUserName);
     } else {
       return bot.sendMsg(response, message.FromUserName);
     }

@@ -6,7 +6,6 @@
 
 require('babel-register');
 
-
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const request = require('request');
@@ -20,19 +19,20 @@ const Buffer = require('./Buffer');
 const ChatBot = require('./ChatBot');
 const { buildMessageContext } = require('./Utils');
 
-import type { Message, MessageProccesor, Contact, Bot } from './Types';
+import type { Bot, MessageProccesor } from './Types';
 
 const FILE_HELPER = 'filehelper';
 
 // Note: order matters.
 const _processors: Array<MessageProccesor> = [
-  require('./processors/BiliBiliProcessor'),
   require('./processors/HashtagProcessor'),
+  require('./processors/BiliBiliProcessor'),
   require('./processors/TulingProcessor'),
   require('./processors/DefaultProcessor'),
 ];
 
-const _buffer = new Buffer(BUFFER_SIZE);
+// const _buffer = new Buffer(BUFFER_SIZE);
+const _buffer = [];
 const bot: Bot = new ChatBot();
 bot.start()
 
@@ -41,8 +41,6 @@ const onError = (error) => {
 }
 
 /* ------------- events ------------- */
-// TODO: assume we only process message coming from other people.
-
 bot.on('uuid', uuid => {
   qrcode.generate(WECHAT.login + uuid, {
     small: true
@@ -63,14 +61,16 @@ bot.on('error', err => {
 })
 
 bot.on('message', msg => {
+  let ToUserName = FILE_HELPER;
   if (msg.isSendBySelf) {
     return;
   }
-
-  let ToUserName = FILE_HELPER;
+  if (_buffer.length > BUFFER_SIZE) {
+    _buffer.pop();
+  }
   switch (msg.MsgType) {
     case bot.CONF.MSGTYPE_TEXT:
-      const initialContext = buildMessageContext(bot, msg, null /* _buffer */);
+      const initialContext = buildMessageContext(bot, msg, _buffer.slice()/* 'concurrency' */);
       if (initialContext) {
         _processors.reduce((prevPromise, processor) => {
           return prevPromise.then(processor.process);
@@ -78,12 +78,11 @@ bot.on('message', msg => {
       }
       break
     case bot.CONF.MSGTYPE_APP:
-
       bot.forwardMsg(msg, ToUserName)
         .catch(onError);
       break
     default:
       break
   }
-  _buffer.push(msg);
+  _buffer.unshift(msg);
 });

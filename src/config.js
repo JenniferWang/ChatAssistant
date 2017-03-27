@@ -26,7 +26,16 @@ module.exports = {
   },
 
   HASHTAG_PROCESSOR: {
-    getTagRecordedResposne: compile('~~~ 胸毛君记下了喵🐱 ~~\ntags: {0}\n, note: {1}'),
+    getTagRecordedResponse: compile('~~~ 胸毛君记下了喵🐱 ~~\ntags: {0}, note: {1}'),
     getMissingPreviousMessageResponse: compile('~~~ 胸毛君没有发现 {0} 上文喵🐱 ~~'),
   },
+
+  BILIBILI_PROCESSOR: {
+    getPrPrResponse: compile('~~~~ 喵🐱, 快来舔 {0} ~~~'),
+    getPrPrResponseWithIndex: compile('~~~~ 喵🐱, 快来舔 {0} 第 {1} p~~~'),
+  },
+
+  TULING_PROCESSOR: {
+    getNoContentResponse: compile('~~~ 胸毛君听不懂🐱 ~~~'),
+  }
 };
