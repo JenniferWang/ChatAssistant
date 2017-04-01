@@ -34,6 +34,9 @@ export type MessageProccesorContext = {
   message: RawMessage,
   // previous messages provide context. [newest msg, ..., oldest msg]
   previousMessages: ?Array<RawMessage>,
+
+  // dump other parsed information.
+  metadata: ?Object,
 };
 
 export type MessageProccesor = {

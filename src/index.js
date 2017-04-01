@@ -8,7 +8,6 @@ require('babel-register');
 
 const qrcode = require('qrcode-terminal');
 const fs = require('fs');
-const request = require('request');
 
 const {
   BUFFER_SIZE,
@@ -24,12 +23,14 @@ import type { Bot, MessageProccesor } from './Types';
 const FILE_HELPER = 'filehelper';
 
 // Note: order matters.
-const _processors: Array<MessageProccesor> = [
+const _textMessageProcessors: Array<MessageProccesor> = [
   require('./processors/HashtagProcessor'),
   require('./processors/BiliBiliProcessor'),
   require('./processors/TulingProcessor'),
   require('./processors/DefaultProcessor'),
 ];
+
+const _appMessageProcessor: MessageProccesor = require('./processors/AppMessageProcessor');
 
 // const _buffer = new Buffer(BUFFER_SIZE);
 const _buffer = [];
@@ -68,18 +69,19 @@ bot.on('message', msg => {
   if (_buffer.length > BUFFER_SIZE) {
     _buffer.pop();
   }
+  const initialContext = buildMessageContext(bot, msg, _buffer.slice()/* 'concurrency' */);
+  if (!initialContext) {
+    return;
+  }
+
   switch (msg.MsgType) {
     case bot.CONF.MSGTYPE_TEXT:
-      const initialContext = buildMessageContext(bot, msg, _buffer.slice()/* 'concurrency' */);
-      if (initialContext) {
-        _processors.reduce((prevPromise, processor) => {
-          return prevPromise.then(processor.process);
-        }, Promise.resolve(initialContext));
-      }
+      _textMessageProcessors.reduce((prevPromise, processor) => {
+        return prevPromise.then(processor.process);
+      }, Promise.resolve(initialContext));
       break
     case bot.CONF.MSGTYPE_APP:
-      bot.forwardMsg(msg, ToUserName)
-        .catch(onError);
+      _appMessageProcessor.process(initialContext);
       break
     default:
       break

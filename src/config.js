@@ -1,5 +1,6 @@
 /*
  * Provide some configurable constants
+ * @flow
  */
 
 'use strict';
@@ -37,5 +38,9 @@ module.exports = {
 
   TULING_PROCESSOR: {
     getNoContentResponse: compile('~~~ 胸毛君听不懂🐱 ~~~'),
-  }
+  },
+
+  NET_EASE_PROCESSOR: {
+    getNetEaseResponse: compile('~~~ 网易音乐传送门🐱~~~\n点击 -> {0} 复制到app中搜索就能听到啦!'),
+  },
 };
