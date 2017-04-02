@@ -13,7 +13,7 @@ module.exports = {
     apiKey: process.env.TU_LING_KEY || '03f9e9175a9343fe8518a9e33d3ba60a',
     secret: process.env.TU_LING_SECRET || '',
   },
-  MONGODB_HOST: 'mongodb://localhost/test',
+  MONGODB_HOST: 'mongodb://localhost/wechat',
   WECHAT: {
     login: 'https://login.weixin.qq.com/l/',
     qr: 'https://login.weixin.qq.com/qrcode/',
@@ -22,25 +22,28 @@ module.exports = {
 
   // Processors
   DEFAULT_PROCESSOR: {
-    getIsMentionedResponse: compile('~~~ 在下松井屋胸毛, 有何贵干喵🐱 ~~~'),
-    getIsCalledResponse: compile('~~~ {0}在呼唤我喵🐱 ~~~'),
+    getIsMentionedResponse: compile('~🐱在下松井屋胸毛, 有何贵干喵~'),
+    getIsCalledResponse: compile('~🐱{0}在呼唤我喵~'),
   },
 
   HASHTAG_PROCESSOR: {
-    getTagRecordedResponse: compile('~~~ 胸毛君记下了喵🐱 ~~\ntags: {0}, note: {1}'),
-    getMissingPreviousMessageResponse: compile('~~~ 胸毛君没有发现 {0} 上文喵🐱 ~~'),
+    getTagRecordedResponse: compile('~🐱胸毛君记下了喵~\ntags: {0}, note: {1}'),
+    getMissingPreviousMessageResponse: compile('~🐱胸毛君没有发现 {0} 上文喵~'),
+    getTooManyTagsForSearchResponse: compile('~🐱胸毛君只能处理一个tag喵~'),
+    getSearchSuccessResponse: compile('~🐱胸毛君搜到这些结果喵~\n{0}'),
+    getClearSuccessResponse: compile('~🐱胸毛君已经忘记{0}了喵~'),
   },
 
   BILIBILI_PROCESSOR: {
-    getPrPrResponse: compile('~~~~ 喵🐱, 快来舔 {0} ~~~'),
-    getPrPrResponseWithIndex: compile('~~~~ 喵🐱, 快来舔 {0} 第 {1} p~~~'),
+    getPrPrResponse: compile('~🐱喵, 快来舔 {0} ~'),
+    getPrPrResponseWithIndex: compile('~🐱喵, 快来舔 {0} 第 {1} p~'),
   },
 
   TULING_PROCESSOR: {
-    getNoContentResponse: compile('~~~ 胸毛君听不懂🐱 ~~~'),
+    getNoContentResponse: compile('~🐱喵, 胸毛君听不懂 ~~~'),
   },
 
   NET_EASE_PROCESSOR: {
-    getNetEaseResponse: compile('~~~ 网易音乐传送门🐱~~~\n点击 -> {0} 复制到app中搜索就能听到啦!'),
+    getNetEaseResponse: compile('~🐱网易音乐传送门🐱~\n点击 -> {0} 复制到app中搜索就能听到了喵!'),
   },
 };
