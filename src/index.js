@@ -73,18 +73,25 @@ bot.on('message', msg => {
   if (!initialContext) {
     return;
   }
-
+  let postContext = null;
   switch (msg.MsgType) {
     case bot.CONF.MSGTYPE_TEXT:
-      _textMessageProcessors.reduce((prevPromise, processor) => {
+      postContext = _textMessageProcessors.reduce((prevPromise, processor) => {
         return prevPromise.then(processor.process);
       }, Promise.resolve(initialContext));
       break
     case bot.CONF.MSGTYPE_APP:
-      _appMessageProcessor.process(initialContext);
+      postContext = _appMessageProcessor.process(initialContext);
       break
     default:
       break
   }
-  _buffer.unshift(msg);
+  if (postContext) {
+    postContext.then(context => {
+      msg.Content = `${context.from || ''}:\n${context.content}`;
+      _buffer.unshift(msg);
+    });
+  } else {
+    _buffer.unshift(msg);
+  }
 });

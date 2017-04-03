@@ -77,6 +77,8 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
     }
     if (!note || !response) {
       // fetch the previous message sent by the same user
+      console.log('current FromUserName', message.FromUserName);
+      console.log('previous messages', previousMessages);
       const previous = previousMessages && previousMessages.find(prev => {
         if (prev.FromUserName !== message.FromUserName) {
           return false;
@@ -87,6 +89,7 @@ function process(context: MessageProccesorContext): Promise<MessageProccesorCont
         }
         return parsed.from === from;
       });
+      console.log()
       if (previous) {
         note = previous.Content;
         response = HASHTAG_PROCESSOR.getTagRecordedResponse(JSON.stringify(tags), note);
